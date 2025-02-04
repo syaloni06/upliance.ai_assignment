@@ -6,51 +6,72 @@ import { useSelector, useDispatch } from "react-redux";
 import { saveUserInfo } from "../../utils/userSlice"; // Redux action
 
 const Editor = () => {
-  const users = useSelector((state) => state.user.data); // Fetch users array from Redux
+  const users = useSelector((state) => state.user.data); // Fetch users from Redux
   const dispatch = useDispatch();
 
   const [selectedUserId, setSelectedUserId] = useState(""); // Track selected user
-  const [content, setContent] = useState(""); // Store user-specific content
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
 
   // Find the selected user from the users array
   const selectedUser = users.find((user) => user.id === selectedUserId) || null;
 
-  // Load the selected user's content when they are chosen
+  // Load the selected user's details when selected
   useEffect(() => {
     if (selectedUser) {
-      setContent((selectedUser.name || "").concat(selectedUser.address || "")); // Initialize `content` if missing
+      setUserData({
+        name: selectedUser.name || "",
+        email: selectedUser.email || "",
+        phone: selectedUser.phone || "",
+        address: selectedUser.address || "",
+      });
     } else {
-      setContent(""); // Clear editor if no user is selected
+      setUserData({ name: "", email: "", phone: "", address: "" });
     }
   }, [selectedUser]);
 
-  // Handle content change
-  const handleChange = (value) => {
-    setContent(value);
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
+
+
+  // Handle field updates
+  const handleUpdate = (field, value) => {
     if (!selectedUserId) return;
 
-    // Update only the selected user's content, keeping other properties intact
+    const updatedUser = {
+      ...selectedUser,
+      [field]: value, // Update only the modified field
+    };
+
     const updatedUsers = users.map((user) =>
-      user.id === selectedUserId ? { ...user, content: value } : user
+      user.id === selectedUserId ? updatedUser : user
     );
 
     dispatch(saveUserInfo(updatedUsers)); // Update Redux store
     localStorage.setItem("userData", JSON.stringify(updatedUsers)); // Persist data
+
+    setUserData((prev) => ({ ...prev, [field]: value })); // Update local state
   };
 
-  // Custom toolbar options for formatting
+  // Custom toolbar for rich text editor
   const toolbarOptions = [
-    [{ bold: true }, { italic: true }, { underline: true }], // Text styles
-    [{ list: "ordered" }, { list: "bullet" }], // Lists
-    [{ align: [] }], // Text alignment
-    ["link", "image"], // Link & Image
-    ["clean"], // Clear formatting
+    [{ bold: true }, { italic: true }, { underline: true }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ align: [] }],
+    ["link", "image"],
+    ["clean"],
   ];
 
   return (
     <Box sx={{ width: "80%", margin: "20px auto" }}>
       <Typography variant="h5" gutterBottom>
-        Rich Text Editor
+        Rich Text User Editor
       </Typography>
 
       {/* User selection dropdown */}
@@ -61,22 +82,29 @@ const Editor = () => {
         displayEmpty
         sx={{ mb: 2 }}
       >
-        <MenuItem value="" disabled>Select a User</MenuItem>
+        <MenuItem value="" disabled>
+          Select a User
+        </MenuItem>
         {users.map((user) => (
           <MenuItem key={user.id} value={user.id}>
-            {user.name}
+            {stripHtml(user.name)} {/* Show name without HTML tags */}
           </MenuItem>
         ))}
       </Select>
 
-      <Paper elevation={3} sx={{ padding: "10px" }}>
-        <ReactQuill
-          value={content}
-          onChange={handleChange}
-          modules={{ toolbar: toolbarOptions }}
-          readOnly={!selectedUserId} // Disable editor if no user is selected
-        />
-      </Paper>
+
+      {/* Rich Text Fields */}
+      {["name", "email", "phone", "address"].map((field) => (
+        <Paper key={field} elevation={3} sx={{ padding: "10px", mb: 2 }}>
+          <Typography variant="subtitle1">{field.charAt(0).toUpperCase() + field.slice(1)}:</Typography>
+          <ReactQuill
+            value={userData[field]}
+            onChange={(value) => handleUpdate(field, value)}
+            modules={{ toolbar: toolbarOptions }}
+            readOnly={!selectedUserId} // Disable if no user selected
+          />
+        </Paper>
+      ))}
     </Box>
   );
 };

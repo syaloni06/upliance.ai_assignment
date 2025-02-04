@@ -6,13 +6,17 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Rich Text Editor
+          <Link to={"/"}>Dashboard</Link>
+
         </Typography>
-        <Link to="/" style={{ color: "white", textDecoration: "none", marginRight: "20px" }}>
+        <Link to="/counter" style={{ color: "white", textDecoration: "none", marginRight: "20px" }}>
+          Counter
+        </Link>
+        <Link to="/editor" style={{ color: "white", textDecoration: "none", marginRight: "20px" }}>
           Editor
         </Link>
-        <Link to="/chart" style={{ color: "white", textDecoration: "none" }}>
-          Chart
+        <Link to="/userData" style={{ color: "white", textDecoration: "none" }}>
+          UserData
         </Link>
       </Toolbar>
     </AppBar>
