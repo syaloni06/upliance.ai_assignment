@@ -8,9 +8,7 @@ import NotFound from "./components/NotFound.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 
 // Lazy Load Components for Performance Optimization
-const Chart = lazy(() => import("./components/TextEditor/Chart.jsx"));
 const Editor = lazy(() => import("./components/TextEditor/Editor.jsx"));
-const Navbar = lazy(() => import("./components/TextEditor/Navbar.jsx"));
 const Counter = lazy(() => import("./components/Counter.jsx")); // Outside TextEditor folder
 const UserDataForm = lazy(() => import("./components/UserDataForm.jsx")); // Outside TextEditor folder
 
@@ -29,26 +27,10 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/chart",
-        element: (
-          <Suspense fallback={<div>Loading Chart...</div>}>
-            <Chart />
-          </Suspense>
-        ),
-      },
-      {
         path: "/editor",
         element: (
           <Suspense fallback={<div>Loading Editor...</div>}>
             <Editor />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/navbar",
-        element: (
-          <Suspense fallback={<div>Loading Navbar...</div>}>
-            <Navbar />
           </Suspense>
         ),
       },
