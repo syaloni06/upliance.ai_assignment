@@ -8,7 +8,7 @@ const userSlice = createSlice({
   },
   reducers: {
     saveUserInfo: (state, action) => {
-      state.data = [...state.data, action.payload]; // Use spread operator to create a new array
+      state.data = action.payload; // Use spread operator to create a new array
       console.log(state.data);
     },
     clearUserInfo: (state) => {
