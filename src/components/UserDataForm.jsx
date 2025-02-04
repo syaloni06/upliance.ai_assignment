@@ -40,12 +40,27 @@ const UserDataForm = () => {
     const handleSubmit = (e) => {
       e.preventDefault();
       const userId = uuidv4();
-      const userData = { id: userId, ...formData };
-      localStorage.setItem("userData", JSON.stringify(userData));
-      dispatch(saveUserInfo(userData));
+      const currentDate = new Date().toISOString(); // Get the current date in ISO format
+    
+      const userData = { 
+        id: userId, 
+        ...formData, 
+        date: currentDate // Store submission date
+      };
+    
+      // Retrieve existing users from Redux
+      const updatedUsers = [...user, userData];
+    
+      // Save updated users to Redux
+      dispatch(saveUserInfo(updatedUsers));
+    
+      // Save updated users to localStorage
+      localStorage.setItem("userData", JSON.stringify(updatedUsers));
+    
       setIsDirty(false); // After submitting, form is no longer dirty
       navigate("/editor");
     };
+    
   
     const fadeAnimation = useSpring({ opacity: 1, from: { opacity: 0 } });
   

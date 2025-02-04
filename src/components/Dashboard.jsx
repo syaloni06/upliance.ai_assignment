@@ -7,7 +7,8 @@ const Dashboard = () => {
   useEffect(() => {
     const storedUserData = JSON.parse(localStorage.getItem("userData")) || [];
     dispatch(saveUserInfo(storedUserData))
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
     return (
       <div><Chart/></div>
