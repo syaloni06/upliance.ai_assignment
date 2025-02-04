@@ -28,3 +28,4 @@ npm run dev
 4. Dashboard: Gain insights through interactive charts on user trends and counter stats.
 ## Project Demo
 ### Deployed Link - https://texteditorandcounter.netlify.app/
+![Preview](https://github.com/user-attachments/assets/90645530-e451-4db2-9786-bcf687022adb)
