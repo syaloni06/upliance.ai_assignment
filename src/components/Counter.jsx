@@ -9,10 +9,10 @@ const Counter = () => {
 
   // Load stored counter usage
   useEffect(() => {
-    const storedCounterUsage = JSON.parse(localStorage.getItem("counterUsage")) || [];
+    // const storedCounterUsage = JSON.parse(localStorage.getItem("counterUsage")) || [];
     const storedMaxCounterValues = JSON.parse(localStorage.getItem("maxCounterValues")) || [];
-    
-    setCounterUsage(storedCounterUsage.length ? storedCounterUsage[storedCounterUsage.length - 1] : { increments: 0, resets: 0 });
+
+    setCounterUsage({ increments: 0, resets: 0 }); // Reset session usage on reload
     setMaxValue(storedMaxCounterValues.length ? storedMaxCounterValues[storedMaxCounterValues.length - 1].maxValue : 0);
   }, []);
 
@@ -33,24 +33,24 @@ const Counter = () => {
   };
 
   const handleReset = () => {
-    // Store counter usage
+    // Store counter usage per session
     const date = new Date().toISOString().split("T")[0];
 
     const storedCounterUsage = JSON.parse(localStorage.getItem("counterUsage")) || [];
-    storedCounterUsage.push({ date, ...counterUsage });
+    storedCounterUsage.push({ date, increments: counterUsage.increments, resets: counterUsage.resets + 1 });
 
     localStorage.setItem("counterUsage", JSON.stringify(storedCounterUsage));
 
-    // Store max counter value
+    // Store max counter value for the session
     const storedMaxCounterValues = JSON.parse(localStorage.getItem("maxCounterValues")) || [];
     storedMaxCounterValues.push({ session: storedMaxCounterValues.length + 1, maxValue });
 
     localStorage.setItem("maxCounterValues", JSON.stringify(storedMaxCounterValues));
 
-    // Reset count and usage
+    // Reset count and reset counter usage properly
     setCount(0);
     setMaxValue(0);
-    setCounterUsage({ increments: 0, resets: counterUsage.resets + 1 });
+    setCounterUsage({ increments: 0, resets: 0 });
   };
 
   return (
