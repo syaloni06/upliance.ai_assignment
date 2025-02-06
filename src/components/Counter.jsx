@@ -9,11 +9,8 @@ const Counter = () => {
 
   // Load stored counter usage
   useEffect(() => {
-    // const storedCounterUsage = JSON.parse(localStorage.getItem("counterUsage")) || [];
-    const storedMaxCounterValues = JSON.parse(localStorage.getItem("maxCounterValues")) || [];
-
     setCounterUsage({ increments: 0, resets: 0 }); // Reset session usage on reload
-    setMaxValue(storedMaxCounterValues.length ? storedMaxCounterValues[storedMaxCounterValues.length - 1].maxValue : 0);
+    setMaxValue(0);
   }, []);
 
   // Background color interpolation
